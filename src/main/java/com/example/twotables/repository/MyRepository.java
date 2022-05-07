@@ -7,6 +7,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,27 +22,19 @@ import java.util.stream.Collectors;
 
 @Repository
 public class MyRepository {
-    private final String scriptFileName = "data.sql";
-    String sqlScript = read(scriptFileName);
 
-    @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    private static String read(String scriptFileName) {
-        try (InputStream is = new ClassPathResource(scriptFileName).getInputStream();
-             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
-            return bufferedReader.lines().collect(Collectors.joining("\n"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    @Transactional
     public String getProductName(String name) {
-        SqlRowSet sqlRowSet = namedParameterJdbcTemplate.queryForRowSet(sqlScript, Map.of("name", name));
-        List<String> list = new ArrayList<>();
-        while (sqlRowSet.next()) {
-            list.add(sqlRowSet.getString("product_name"));
+        Query query = entityManager.createQuery("select o.productName from Order o join Customer c on o.customer.id = c.id where c.name = :name", String.class);
+        query.setParameter("name", name);
+        var queryResultList = query.getResultList();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Object o : queryResultList) {
+            stringBuilder.append(o.toString()).append("\n");
         }
-        return list.toString();
+        return stringBuilder.toString();
     }
 }
