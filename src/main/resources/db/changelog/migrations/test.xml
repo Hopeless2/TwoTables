@@ -8,16 +8,16 @@
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="surname" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
             <column name="age" type="int">
                 <constraints nullable="false"/>
             </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="phone_number" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -28,17 +28,17 @@
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="date" type="varchar(10)">
+            <column name="amount" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="customer_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_testOrders_testCustomers" references = "testCustomers(id)"/>
+            <column name="date" type="varchar(10)">
+                <constraints nullable="false"/>
             </column>
             <column name="product_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="amount" type="varchar(255)">
-                <constraints nullable="false"/>
+            <column name="customer_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_testOrders_testCustomers" references = "testCustomers(id)"/>
             </column>
         </createTable>
     </changeSet>
